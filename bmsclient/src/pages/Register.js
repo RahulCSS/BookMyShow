@@ -1,24 +1,27 @@
 import React from 'react';
-import { Form, Input, message as Message, Button } from "antd";
-import { Link } from 'react-router-dom';
+import { Form, Input, message, Button } from "antd";
+import { Link, useNavigate } from 'react-router-dom';
 import { RegisterUser } from '../apicalls/users';
+
+
 function Register() {
 
-  
+  const navigate = useNavigate();
   
   const onFinish = async (values) => {
     const { confirm , ...filteredValues } = values;
     try{
       const response = await RegisterUser(filteredValues);
       if(response.success){
-        Message.success(response.message);
+        message.success(response.message);
+        navigate('/login');
         console.log(response.message);
       }else{
-        Message.error(response.message);
-        console.log(response.message);
+        message.error(response.message);
+        console.error(response.message);
       }
     }catch(error){
-      Message.error(error.message);
+      message.error(error);
     }
     //console.log(filteredValues);
   };
