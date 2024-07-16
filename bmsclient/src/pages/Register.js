@@ -1,14 +1,39 @@
 import React from 'react';
-import { Form, Input } from "antd";
-import Button from "../components/Button";
+import { Form, Input, message as Message, Button } from "antd";
 import { Link } from 'react-router-dom';
+import { RegisterUser } from '../apicalls/users';
 function Register() {
+
+  
+  
+  const onFinish = async (values) => {
+    const { confirm , ...filteredValues } = values;
+    try{
+      const response = await RegisterUser(filteredValues);
+      if(response.success){
+        Message.success(response.message);
+        console.log(response.message);
+      }else{
+        Message.error(response.message);
+        console.log(response.message);
+      }
+    }catch(error){
+      Message.error(error.message);
+    }
+    //console.log(filteredValues);
+  };
+
   return (
     <div className='flex justify-center items-center h-screen w-screen bg-slate-200'> 
-      <Form  className='bg-white p-4'>
+      <Form layout='vertical' className='bg-white p-4' 
+                              onFinish={
+                              //(values)=>{console.log(values);}
+                              onFinish
+                              }   
+      >
         <h2 className='font-bold text-3xl text-blue-600 text-center pb-4'> Welcome to Show Family</h2>
           <Form.Item
-          name="username"
+          name="name"
           label="Username"
           tooltip="What do you want site to address you?"
           rules={[
@@ -77,7 +102,7 @@ function Register() {
         </Form.Item>
 
         <div className="flex flex-col items-center gap-1">
-          <Button />
+        <Button type="primary" htmlType = "submit">Register</Button>
           <Link to ='/login'> Already have an account? Login</Link>
         </div>
 

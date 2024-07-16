@@ -25,7 +25,7 @@ router.post('/register',async (request, response) => {
             success: true,
             message: 'User registered successfully, Please Login' 
         });
-    } catch (error) {
+    } catch (err) {
         console.error(err);
         response.status(403).json({ 
             success: false,
@@ -37,9 +37,16 @@ router.post('/register',async (request, response) => {
 router.post('/login',async (request, response) => {
     try{
         const user = await User.findOne({email: request.body.email });
-        const validPassword = await bcrypt.compare(request.body.password, user.password);
+        if(!user ) {
+            response.status(403).send({
+                success: false,
+                message: 'Invalid Credentials'
+            });
+            return;
+        }
         
-        if(!user || !validPassword) {
+        const validPassword = await bcrypt.compare(request.body.password, user.password);
+        if(!validPassword ) {
             response.status(403).send({
                 success: false,
                 message: 'Invalid Credentials'
@@ -52,7 +59,7 @@ router.post('/login',async (request, response) => {
             message: 'User logged in successfully',
         });
         
-    }catch{
+    }catch(err){
         console.error(err);
         response.status(403).json({ 
             success: false,
