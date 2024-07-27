@@ -1,9 +1,11 @@
+const express = require('express');
 const router = require('express').Router();
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/register',async (request, response) => {
+router.post('/api/user/register',async (request, response) => {
     try {
         const userExists = await User.findOne({email: request.body.email });
         
@@ -35,7 +37,7 @@ router.post('/register',async (request, response) => {
     };
 });
 
-router.post('/login',async (request, response) => {
+router.post('/api/user/login',async (request, response) => {
     try{
         const user = await User.findOne({email: request.body.email });
         if(!user ) {
@@ -75,5 +77,21 @@ router.post('/login',async (request, response) => {
     }
 });
 
+router.get('/api/user/getcurrentuser', authMiddleware, async (req, res,next) =>{
+    try{
+        const user = await User.findById(req.body.userId).select('-password');
+        res.send({
+            success: true,
+            message: 'User details retrieved successfully',
+            data: user
+        });
+        next();
+    }catch(err){
+        res.status(500).send({
+            success: false,
+            message: 'Something went wrong'
+        });
+    }
+});
 
 module.exports = router;

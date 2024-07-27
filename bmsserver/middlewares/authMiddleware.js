@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function(req,res){
+module.exports = function(req,res,next){
     try{
-        const token = req.headers.Authorization.split(" ")[1];
+        const token = req.headers.authorization.split(" ")[1];
         const decodedToken = jwt.verify(token, process.env.jwtCode);
         req.body.userId = decodedToken.userId;
     }catch{
@@ -11,4 +11,5 @@ module.exports = function(req,res){
             message: 'Invalid Token'
         });
     }
+    next();
 };

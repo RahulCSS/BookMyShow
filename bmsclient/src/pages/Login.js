@@ -13,10 +13,11 @@ function Login() {
         message.success(response.message);
         localStorage.setItem('token', response.data);
         navigate('/');
-        console.log(response.message);
+        //console.log(response.message);
       }else{
         message.error(response.message);
         console.error(response.message);
+  
       }
     }catch(error){
       message.error(error.message);
